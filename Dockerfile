@@ -1,21 +1,10 @@
-FROM ubuntu:14.04
+FROM alpine:3.7
 MAINTAINER Mike Bartoli "michael.bartoli@pomona.edu"
-
-RUN apt-get update && apt-get install -y build-essential \
-	python \
-	python-dev \
-	python-setuptools \
-	python-numpy \
-	git
-
-WORKDIR /home
-RUN git clone https://github.com/saffsd/langid.py 
-
-WORKDIR /home/langid.py
-RUN python setup.py build
-RUN python setup.py install
-
-WORKDIR /home/langid.py/langid
-#RUN python langid.py -s
-
-
+RUN apk add --update \
+    python \
+    python-dev \
+    py-pip \
+    build-base \
+   && pip install langid \
+   && rm -rf /var/cache/apk/*
+CMD langid -s -n --langs=en,ja,es,de,fr,pt --port=$PORT
